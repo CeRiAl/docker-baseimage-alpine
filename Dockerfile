@@ -12,6 +12,7 @@ ENV PS1="$(whoami)@$(hostname):$(pwd)\$ " \
     TERM="xterm"
 
 RUN \
+  S6_DOWNLOAD_URL="https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}.tar.gz" && \
   echo "**** install build packages ****" && \
     apk add --no-cache --virtual=build-dependencies \
       curl \
@@ -24,7 +25,6 @@ RUN \
       shadow \
       tzdata && \
   echo "**** add s6 overlay v${S6_OVERLAY_VERSION} (${S6_OVERLAY_ARCH}) ****" && \
-    S6_DOWNLOAD_URL="https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}.tar.gz" && \
     curl -SL "${S6_DOWNLOAD_URL}" | tar x -C / -z && \
   echo "**** create abc user and make our folders ****" && \
     groupmod -g 1000 users && \
