@@ -1,10 +1,6 @@
 FROM alpine:3.8
 
-# set version label
-ARG BUILD_DATE="unknown"
-ARG VERSION="dev"
-LABEL build_version="Cryptopath.org version:- ${VERSION} Build-date:- ${BUILD_DATE}"
-LABEL maintainer="CeRiAl"
+MAINTAINER CeRiAl
 
 # set version for s6 overlay
 ARG S6_OVERLAY_VERSION="v1.21.7.0"
