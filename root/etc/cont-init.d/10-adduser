@@ -1,34 +1,58 @@
 #!/usr/bin/with-contenv bash
 
-PUID=${PUID:-911}
-PGID=${PGID:-911}
-PGIDS=${PGIDS}
-
-usermod -o -u "$PUID" abc
-groupmod -o -g "$PGID" abc
-for ADD_GID in $PGIDS; do
-  groupadd -o -g $ADD_GID "g-$ADD_GID"
-  usermod -a -G "g-$ADD_GID" abc
-done
-
-chown abc:abc /app
-chown abc:abc /home/abc
-
 echo '
--------------------------------------------------------------------------------
-                                  _____                     ___________
-     __________________  ___________  /____________________ __  /___  /_
-     _  ___/_  ___/_  / / /__  __ \  __/  __ \__  __ \  __ `/  __/_  __ \
-     / /__ _  /   _  /_/ /__  /_/ / /_ / /_/ /_  /_/ / /_/ // /_ _  / / /
-     \___/ /_/    _\__, / _  .___/\__/ \____/_  .___/\__,_/ \__/ /_/ /_/
-                  /____/  /_/                /_/
+--------------------------------------------------------------------
+                             _____                     ___________
+__________________  ___________  /____________________ __  /___  /_
+_  ___/_  ___/_  / / /__  __ \  __/  __ \__  __ \  __ `/  __/_  __ \
+/ /__ _  /   _  /_/ /__  /_/ / /_ / /_/ /_  /_/ / /_/ // /_ _  / / /
+\___/ /_/    _\__, / _  .___/\__/ \____/_  .___/\__,_/ \__/ /_/ /_/
+             /____/  /_/                /_/
 
--------------------------------------------------------------------------------
+--------------------------------------------------------------------
+'
 
-UID/GIDS
--------------------------------------'
-echo "
-User uid:    $(id -u abc)
-User gids:   $(id -G abc)
+# overrideable variables (via "--env")
+PUID="$PUID"
+PGID="$PGID"
+PGIDS="$PGIDS"
+
+
+USERNAME="abc"
+HOMEDIR="$(getent passwd $USERNAME | cut -d: -f6)"
+
+if [ ! -z "$PUID" ] && [ "$PUID" != "$(id -u "$USERNAME")" ]; then
+  echo "**** change UID to $PUID... ****"
+  usermod -o -u "$PUID" "$USERNAME" && \
+  echo -e "  ...done\n" || echo -e "  ...FAILED!\n"
+fi
+
+if [ ! -z "$PGID" ] && [ "$PGID" != "$(id -G "$USERNAME")" ]; then
+  echo "**** change main GID to $PGID... ****"
+  groupmod -o -g "$PGID" "$USERNAME" && \
+  echo -e "  ...done\n" || echo -e "  ...FAILED!\n"
+fi
+
+if [ ! -z "$PGIDS" ]; then
+  echo "**** add additional GIDs... ****"
+  for ADD_GID in $PGIDS; do
+    echo "add GID ${ADD_GID}..."
+    groupadd -o -g "$ADD_GID" "g-${ADD_GID}" && \
+    usermod -a -G "g-${ADD_GID}" "$USERNAME" && \
+    echo -e "  ...ok" || echo -e "  ...fail"
+  done
+  echo -e "  ...done\n"
+fi
+
+if [ ! -z "$HOMEDIR" ] && [ "${USERNAME}:${USERNAME}" != "$(stat -c '%U:%G' "$HOMEDIR")" ]; then
+  echo "**** change permissions of user homedir ****"
+  chown "${USERNAME}:${USERNAME}" "$HOMEDIR" && \
+  echo -e "  ...done\n" || echo -e "  ...FAILED!\n"
+fi
+
+echo "UID/GIDS
+-------------------------------------
+User uid:    $(id -u $USERNAME)
+User gids:   $(id -G $USERNAME)
 -------------------------------------
 "

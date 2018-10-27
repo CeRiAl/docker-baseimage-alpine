@@ -12,28 +12,29 @@ ENV PS1="$(whoami)@$(hostname):$(pwd)\$ " \
     TERM="xterm"
 
 RUN \
+  USERNAME="abc" && \
+  USERID="911" && \
   S6_DOWNLOAD_URL="https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-${S6_OVERLAY_ARCH}.tar.gz" && \
-  echo "**** install build packages ****" && \
+  echo -e "\n**** install build packages ****" && \
     apk add --no-cache --virtual=build-dependencies \
       curl \
       tar && \
-  echo "**** install runtime packages ****" && \
+  echo -e "\n**** install runtime packages ****" && \
     apk add --no-cache \
       bash \
       ca-certificates \
       coreutils \
       shadow \
       tzdata && \
-  echo "**** add s6 overlay v${S6_OVERLAY_VERSION} (${S6_OVERLAY_ARCH}) ****" && \
+  echo -e "\n**** add s6 overlay ${S6_OVERLAY_VERSION} (${S6_OVERLAY_ARCH}) ****" && \
     curl -SL "${S6_DOWNLOAD_URL}" | tar x -C / -z && \
-  echo "**** create abc user and make our folders ****" && \
+  echo -e "\n**** create ${USERNAME} user and homedir ****" && \
     groupmod -g 1000 users && \
-    useradd -u 911 -U -s /bin/false abc && \
-    usermod -G users abc && \
+    useradd -u "${USERID}" -U -s /bin/false "${USERNAME}" && \
+    usermod -G users "${USERNAME}" && \
     mkdir -p \
-      /app \
-      /home/abc && \
-  echo "**** cleanup ****" && \
+      "/home/${USERNAME}" && \
+  echo -e "\n**** cleanup ****" && \
     apk del --purge \
       build-dependencies
 
