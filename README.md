@@ -4,6 +4,7 @@
 [![Layers](https://images.microbadger.com/badges/image/cryptopath/alpine.svg)][badge]
 [![Docker Pulls](https://img.shields.io/docker/pulls/cryptopath/alpine.svg)][hub]
 [![Docker Stars](https://img.shields.io/docker/stars/cryptopath/alpine.svg)][hub]
+[![Docker Build Status](https://img.shields.io/docker/build/cryptopath/alpine.svg)](https://hub.docker.com/r/cryptopath/alpine/builds/)
 
 A custom base image built with [Alpine linux][appurl] and [S6 overlay](https://github.com/just-containers/s6-overlay).
 
