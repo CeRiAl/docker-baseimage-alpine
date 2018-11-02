@@ -1,15 +1,9 @@
 #!/usr/bin/env bash
 set -e  # Exit on error
 
-IMAGE_NAME="cryptopath/alpine"
-VERSION="$(cat VERSION)"
-BASEVERSION="${VERSION%%-*}"
+# set environment variables used in build-hook scripts
+DOCKER_REPO="cryptopath/alpine"
+DOCKER_TAG="$(cat VERSION)"
 
-echo -e "NAME:\t\t${IMAGE_NAME}"
-echo -e "VERSION:\t${VERSION}"
-echo -e "BASEVERSION:\t${BASEVERSION}"
-
-docker build \
-  --tag ${IMAGE_NAME}:latest \
-  --tag ${IMAGE_NAME}:${VERSION} \
-  --tag ${IMAGE_NAME}:${BASEVERSION} .
+# source-in post_push hook (but don't push, only tag)
+source hooks/post_push --no-push
