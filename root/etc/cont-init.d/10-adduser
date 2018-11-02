@@ -13,8 +13,8 @@ _  ___/_  ___/_  / / /__  __ \  __/  __ \__  __ \  __ `/  __/_  __ \
 '
 
 # overrideable variables (via "--env")
-PUID="$PUID"
-PGID="$PGID"
+PUID="${PUID:-911}"
+PGID="${PGID:-911}"
 PGIDS="$PGIDS"
 
 
