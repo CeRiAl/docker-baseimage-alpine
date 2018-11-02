@@ -1,4 +1,4 @@
-# docker-baseimage-alpine
+# cryptopath/alpine
 
 [![Version][img-version]][badge] [![Layers][img-layers]][badge] [![Pulls][img-pulls]][hub] [![Stars][img-stars]][hub] [![Build Status][img-buildstatus]][buildstatus]
 
